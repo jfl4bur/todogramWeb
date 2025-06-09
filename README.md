@@ -70,7 +70,7 @@
       </ul>
     </li>
     <li><a href="#usage">Usage</a></li>
-    <li><a href="#roadmap">Roadmap</a></li>
+    <li><a href="#pasosadicionalesrecomendados">Pasos Adicionales Recomendados:</a></li>
     <li><a href="#contributing">Contributing</a></li>
     <li><a href="#license">License</a></li>
     <li><a href="#contact">Contact</a></li>
@@ -170,10 +170,11 @@ _For more examples, please refer to the [Documentation](https://example.com)_
 
 
 <!-- ROADMAP -->
-## Roadmap
-
-- [x] Add Changelog
-- [x] Add back to top links
+## Pasos Adicionales Recomendados:
+ # En tu API de Vercel:
+- [x] Asegúrate que el endpoint devuelva siempre un objeto con la propiedad `movies`
+- [x] Ejemplo de estructura recomendada:
+      
 - [ ] Add Additional Templates w/ Examples
 - [ ] Add "components" document to easily copy & paste sections of the readme
 - [ ] Multi-language Support
