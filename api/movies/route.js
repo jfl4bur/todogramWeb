@@ -1,62 +1,52 @@
-import { Client } from '@notionhq/client';
-
-const notion = new Client({ auth: process.env.NOTION_API_KEY });
-
 export async function GET() {
   try {
     const databaseId = process.env.NOTION_DATABASE_ID;
-    
-    const response = await notion.databases.query({
-      database_id: databaseId,
-      filter: {
-        property: "Estado",
-        select: {
-          equals: "Publicado"
-        }
+    const response = await fetch(`https://api.notion.com/v1/databases/${databaseId}/query`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${process.env.NOTION_API_KEY}`,
+        'Content-Type': 'application/json',
+        'Notion-Version': '2022-06-28'
       },
-      sorts: [
-        {
-          property: "Categoria",
-          direction: "ascending"
-        }
-      ]
+      body: JSON.stringify({
+        filter: {
+          property: "Estado",
+          select: { equals: "Publicado" }
+        },
+        sorts: [{ property: "Categoria", direction: "ascending" }]
+      })
     });
 
-    const movies = response.results.map(page => ({
-        const get = (name) => page.properties[name]?.title?.[0]?.text?.content ||
-                            page.properties[name]?.rich_text?.[0]?.text?.content ||
-                            page.properties[name]?.select?.name || '';
-
-      const getImg = (name) => page.properties[name]?.files?.[0]?.external?.url ||
-                               page.properties[name]?.files?.[0]?.file?.url || '';
-
-      return {
-        titulo: get('Título'),
-        sinopsis: get('Sinopsis'),
-        portada: getImg('Portada'),
-        carteles: getImg('Carteles'),
-        generos: get('Géneros')
-      };
-    });
-    }));
-
-    return new Response(JSON.stringify(movies), {
+    const data = await response.json();
+    
+    return new Response(JSON.stringify(data.results), {
       status: 200,
       headers: {
-        'Access-Control-Allow-Origin': '*',
-        'Content-Type': 'application/json',
-        'Cache-Control': 'public, max-age=3600'
+        'Access-Control-Allow-Origin': 'https://todogram.softr.app',
+        'Access-Control-Allow-Methods': 'GET, OPTIONS',
+        'Access-Control-Allow-Headers': 'Content-Type',
+        'Content-Type': 'application/json'
       }
     });
 
   } catch (error) {
-    console.error("Error:", error);
-    return new Response(JSON.stringify({ error: "Failed to fetch data" }), {
+    return new Response(JSON.stringify({ error: error.message }), {
       status: 500,
       headers: {
-        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Origin': 'https://todogram.softr.app',
         'Content-Type': 'application/json'
       }
     });
   }
+}
+
+// ¡IMPORTANTE! Añade esto para manejar preflight CORS
+export async function OPTIONS() {
+  return new Response(null, {
+    headers: {
+      'Access-Control-Allow-Origin': 'https://todogram.softr.app',
+      'Access-Control-Allow-Methods': 'GET, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type'
+    }
+  });
 }
