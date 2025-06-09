@@ -70,7 +70,7 @@
       </ul>
     </li>
     <li><a href="#usage">Usage</a></li>
-    <li><a href="#pasosadicionalesrtecomendados">Pasos Adicionales Recomendados</a></li>
+    <li><a href="#pasos">Pasos Adicionales Recomendados</a></li>
     <li><a href="#contributing">Contributing</a></li>
     <li><a href="#license">License</a></li>
     <li><a href="#contact">Contact</a></li>
@@ -169,7 +169,7 @@ _For more examples, please refer to the [Documentation](https://example.com)_
 
 
 
-<!-- pasosadicionalesrtecomendados -->
+<!-- pasos -->
 ## Pasos Adicionales Recomendados
  ### 1. En tu API de Vercel:
 - [x] Asegúrate que el endpoint devuelva siempre un objeto con la propiedad `movies`
