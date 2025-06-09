@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Rakuten Clon</title>
+  <style>
+    body {
+      background: #000;
+      color: white;
+      font-family: sans-serif;
+    }
+    .carrusel {
+      display: flex;
+      overflow-x: auto;
+      gap: 1rem;
+      padding: 1rem;
+    }
+    .item {
+      flex: 0 0 auto;
+      width: 200px;
+      position: relative;
+    }
+    .item img {
+      width: 100%;
+      border-radius: 10px;
+    }
+    .info {
+      position: absolute;
+      bottom: 0;
+      background: rgba(0,0,0,0.7);
+      width: 100%;
+      padding: 0.5rem;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    .item:hover .info {
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+  <h1>Rakuten Clon</h1>
+  <div class="carrusel" id="carrusel"></div>
+
+  <script>
+    fetch('/api/movies')
+      .then(res => res.json())
+      .then(data => {
+        const container = document.getElementById('carrusel');
+        data.movies.forEach(movie => {
+          const div = document.createElement('div');
+          div.className = 'item';
+          div.innerHTML = `
+            <img src="${movie.portada}" alt="${movie.titulo}">
+            <div class="info">
+              <strong>${movie.titulo}</strong><br>
+              ${movie.generos}
+            </div>
+          `;
+          container.appendChild(div);
+        });
+      })
+      .catch(err => console.error('Error cargando películas:', err));
+  </script>
+</body>
+</html>
