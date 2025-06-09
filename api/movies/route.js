@@ -23,7 +23,21 @@ export async function GET() {
     });
 
     const movies = response.results.map(page => ({
-      // ... (tu mapeo actual de datos)
+        const get = (name) => page.properties[name]?.title?.[0]?.text?.content ||
+                            page.properties[name]?.rich_text?.[0]?.text?.content ||
+                            page.properties[name]?.select?.name || '';
+
+      const getImg = (name) => page.properties[name]?.files?.[0]?.external?.url ||
+                               page.properties[name]?.files?.[0]?.file?.url || '';
+
+      return {
+        titulo: get('Título'),
+        sinopsis: get('Sinopsis'),
+        portada: getImg('Portada'),
+        carteles: getImg('Carteles'),
+        generos: get('Géneros')
+      };
+    });
     }));
 
     return new Response(JSON.stringify(movies), {
