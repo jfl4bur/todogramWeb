@@ -69,7 +69,7 @@
         <li><a href="#installation">Installation</a></li>
       </ul>
     </li>
-    <li><a href="#usage">Usage</a></li>
+    <li><a href="#bloque-softr">Bloque Softr</a></li>
     <li><a href="#pasos-adicionales-recomendados">Pasos Adicionales Recomendados</a></li>
     <li><a href="#contributing">Contributing</a></li>
     <li><a href="#license">License</a></li>
@@ -158,8 +158,8 @@ _Below is an example of how you can instruct your audience on installing and set
 
 
 
-<!-- USAGE EXAMPLES -->
-## Usage
+<!-- BLOQUE SOFTR -->
+## Bloque Softr
 
 Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos work well in this space. You may also link to more resources.
 
