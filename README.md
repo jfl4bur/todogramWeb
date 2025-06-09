@@ -128,7 +128,12 @@ To get a local copy up and running follow these simple example steps.
 This is an example of how to list things you need to use the software and how to install them.
 * npm
   ```css
-  npm install npm@latest -g
+  .movie-card {
+    background: #222;
+    border-radius: 8px;
+    overflow: hidden;
+    transition: transform 0.3s;
+  }
   ```
 
 ### Installation
@@ -175,7 +180,7 @@ _For more examples, please refer to the [Documentation](https://example.com)_
 - [x] Asegúrate que el endpoint devuelva siempre un objeto con la propiedad `movies`
 - [x] Ejemplo de estructura recomendada:
 
-   ```sh
+   ```js
          {
           "movies": [
             {
