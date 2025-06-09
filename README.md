@@ -7,4 +7,4 @@
 
 ## Autores
 [<img src="https://avatars.githubusercontent.com/u/74684004?v=4" width=115><br>
-| :---: | :---: | :---: |<br><sub>    @Todogram</sub>](https://github.com/jfl4bur) |<br>
+| :---: | :---: | :---: |<br><sub> jflabur -  @Todogram</sub>](https://github.com/jfl4bur) |<br>
