@@ -177,8 +177,7 @@ _For more examples, please refer to the [Documentation](https://example.com)_
 <!-- #pasos-adicionales-recomendados -->
 ## Pasos Adicionales Recomendados
  ### 1. En tu API de Vercel:
-- [x] Asegúrate que el endpoint devuelva siempre un objeto con la propiedad `movies`
-- [x] Ejemplo de estructura recomendada:
+- [x] Asegúrate que el endpoint devuelva siempre un objeto con la propiedad `movies` - Ejemplo de estructura recomendada:
 
    ```js
          {
@@ -191,7 +190,13 @@ _For more examples, please refer to the [Documentation](https://example.com)_
           ]
         }
    ```
-- [ ] Add Additional Templates w/ Examples
+   
+- [x] Verifica la respuesta completa de tu API en:
+
+   ```sh
+     https://todogram-web-du6v.vercel.app/api/movies
+   ```
+
 - [ ] Add "components" document to easily copy & paste sections of the readme
 - [ ] Multi-language Support
     - [ ] Chinese
