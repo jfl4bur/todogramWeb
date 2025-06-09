@@ -69,6 +69,7 @@
         <li><a href="#installation">Installation</a></li>
       </ul>
     </li>
+    <li><a href="#cambios-clave-realizados">Cambios Clave Realizadoss</a></li>
     <li><a href="#bloque-softr">Bloque Softr</a></li>
     <li><a href="#pasos-adicionales-recomendados">Pasos Adicionales Recomendados</a></li>
     <li><a href="#contributing">Contributing</a></li>
@@ -161,6 +162,28 @@ _Below is an example of how you can instruct your audience on installing and set
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
+
+
+<!-- cambios-clave-realizados -->
+### Cambios Clave Realizados
+
+1. Estructura de datos corregida:
+    - Ahora accede a data.movies en lugar de solo data
+    - Verifica que movies sea un array antes de renderizar
+   
+2. Mejor manejo de errores:
+    - Verificación explícita de la estructura de datos
+    - Mensajes de error más descriptivos
+
+3. Renderizado optimizado:
+    - Grid CSS para mejor disposición de las películas
+    - Lazy loading para imágenes
+    - Efecto hover en las tarjetas
+      
+4. Compatibilidad con tu API actual:
+    - Usa los campos exactos que devuelve tu API (`titulo`, `portada`, etc.)
+    - Valores por defecto para campos opcionales `config.js`
+  
 
 
 <!-- BLOQUE SOFTR -->
