@@ -182,7 +182,7 @@ _Below is an example of how you can instruct your audience on installing and set
       
 4. Compatibilidad con tu API actual:
     - Usa los campos exactos que devuelve tu API (`titulo`, `portada`, etc.)
-    - Valores por defecto para campos opcionales `config.js`
+    - Valores por defecto para campos opcionales.
   
 
 
