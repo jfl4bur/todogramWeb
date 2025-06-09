@@ -165,7 +165,7 @@ _Below is an example of how you can instruct your audience on installing and set
 
 
 <!-- cambios-clave-realizados -->
-### Cambios Clave Realizados
+## Cambios Clave Realizados
 
 1. Estructura de datos corregida:
     - Ahora accede a data.movies en lugar de solo data
