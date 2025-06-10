@@ -1,66 +1,112 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <title>Rakuten Clon</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Rakuten.tv - Réplica</title>
   <style>
     body {
-      background: #000;
+      margin: 0;
+      background-color: #111;
       color: white;
-      font-family: sans-serif;
+      font-family: Arial, sans-serif;
     }
-    .carrusel {
-      display: flex;
+    h2 {
+      margin-left: 24px;
+      margin-top: 24px;
+    }
+    .carousel-container {
       overflow-x: auto;
-      gap: 1rem;
-      padding: 1rem;
+      white-space: nowrap;
+      padding: 20px 24px;
+      display: flex;
+      gap: 16px;
+      scroll-snap-type: x mandatory;
     }
-    .item {
-      flex: 0 0 auto;
-      width: 200px;
+    .movie-item {
       position: relative;
+      width: 180px;
+      height: 270px;
+      flex-shrink: 0;
+      scroll-snap-align: start;
+      transition: transform 0.3s ease;
+      cursor: pointer;
     }
-    .item img {
+    .movie-item img.movie-poster {
       width: 100%;
-      border-radius: 10px;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 12px;
+      transition: transform 0.3s ease, filter 0.3s ease;
+      display: block;
     }
-    .info {
+    .movie-item:hover img.movie-poster {
+      transform: scale(1.05);
+      filter: blur(2px) brightness(0.6);
+    }
+    .movie-hover {
       position: absolute;
-      bottom: 0;
-      background: rgba(0,0,0,0.7);
-      width: 100%;
-      padding: 0.5rem;
+      inset: 0;
+      padding: 12px;
       opacity: 0;
-      transition: opacity 0.3s;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      background-size: cover;
+      background-position: center;
+      border-radius: 12px;
+      color: white;
+      transition: opacity 0.3s ease;
+      z-index: 2;
+      text-shadow: 1px 1px 4px black;
+      background-repeat: no-repeat;
     }
-    .item:hover .info {
+    .movie-item:hover .movie-hover {
       opacity: 1;
+    }
+    .movie-hover h3 {
+      font-size: 16px;
+      margin: 0;
+    }
+    .movie-hover p {
+      font-size: 13px;
+      margin: 4px 0;
+      max-height: 60px;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
   </style>
 </head>
 <body>
-  <h1>Rakuten Clon</h1>
-  <div class="carrusel" id="carrusel"></div>
+
+  <h2>Películas Populares</h2>
+  <div class="carousel-container" id="rakuten-carousel"></div>
 
   <script>
-    fetch('/api/movies')
-      .then(res => res.json())
-      .then(data => {
-        const container = document.getElementById('carrusel');
-        data.movies.forEach(movie => {
-          const div = document.createElement('div');
-          div.className = 'item';
-          div.innerHTML = `
-            <img src="${movie.portada}" alt="${movie.titulo}">
-            <div class="info">
-              <strong>${movie.titulo}</strong><br>
-              ${movie.generos}
-            </div>
-          `;
-          container.appendChild(div);
+    async function cargarPeliculas() {
+      const container = document.getElementById("rakuten-carousel");
+      const response = await fetch("/api/movies");
+      const peliculas = await response.json();
+
+      peliculas.forEach(p => {
+        const card = document.createElement("div");
+        card.className = "movie-item";
+        card.innerHTML = \`
+          <img class="movie-poster" src="\${p.poster}" alt="\${p.titulo}" />
+          <div class="movie-hover" style="background-image: url('\${p.fondo}')">
+            <h3>\${p.titulo}</h3>
+            <p>\${p.genero}</p>
+            <p>\${p.sinopsis}</p>
+          </div>
+        \`;
+        card.addEventListener("click", () => {
+          alert(\`Modal con más info de: \${p.titulo}\`);
         });
-      })
-      .catch(err => console.error('Error cargando películas:', err));
+        container.appendChild(card);
+      });
+    }
+    document.addEventListener("DOMContentLoaded", cargarPeliculas);
   </script>
+
 </body>
 </html>
