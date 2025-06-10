@@ -1,8 +1,10 @@
 {
-  "name": "todogram-api",
+  "name": "rakuten-clon",
   "version": "1.0.0",
   "main": "index.js",
+  "license": "MIT",
+  "type": "module",
   "dependencies": {
-    "node-fetch": "^2.6.7"
+    "node-fetch": "^3.3.2"
   }
 }
