@@ -1,39 +1,41 @@
 import fetch from 'node-fetch';
 
 export default async function handler(req, res) {
-  const NOTION_KEY = "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";
-  const DATABASE_ID = "168ff30851b68184aa8af946a37a4cac";
-
-  const url = `https://api.notion.com/v1/databases/${DATABASE_ID}/query`;
-
-  const options = {
-    method: "POST",
-    headers: {
-      "Authorization": `Bearer ${NOTION_KEY}`,
-      "Notion-Version": "2022-06-28",
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({ page_size: 10 })
-  };
+  const NOTION_API_KEY = process.env.NOTION_API_KEY || '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';
+  const DATABASE_ID = process.env.NOTION_DATABASE_ID || '168ff30851b68184aa8af946a37a4cac';
 
   try {
-    const response = await fetch(url, options);
+    const response = await fetch(`https://api.notion.com/v1/databases/${DATABASE_ID}/query`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${NOTION_API_KEY}`,
+        'Content-Type': 'application/json',
+        'Notion-Version': '2022-06-28'
+      }
+    });
+
     const data = await response.json();
 
-    const items = data.results.map(page => {
-      const props = page.properties;
+    const movies = data.results.map(page => {
+      const get = (name) => page.properties[name]?.title?.[0]?.text?.content ||
+                            page.properties[name]?.rich_text?.[0]?.text?.content ||
+                            page.properties[name]?.select?.name || '';
+
+      const getImg = (name) => page.properties[name]?.files?.[0]?.external?.url ||
+                               page.properties[name]?.files?.[0]?.file?.url || '';
+
       return {
-        titulo: props["Título"]?.title[0]?.plain_text || "Sin título",
-        genero: props["Géneros"]?.rich_text[0]?.plain_text || "",
-        sinopsis: props["Sinopsis"]?.rich_text[0]?.plain_text || "",
-        poster: props["Portada"]?.files[0]?.external?.url || "",
-        fondo: props["Carteles"]?.files[0]?.external?.url || ""
+        titulo: get('Título'),
+        sinopsis: get('Sinopsis'),
+        portada: getImg('Portada'),
+        carteles: getImg('Carteles'),
+        generos: get('Géneros')
       };
     });
 
-    res.status(200).json(items);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: "Error al conectar con Notion." });
+    res.status(200).json({ movies });
+  } catch (error) {
+    console.error('Error fetching Notion data:', error);
+    res.status(500).json({ error: 'Error fetching Notion data' });
   }
 }
