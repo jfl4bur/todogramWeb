@@ -8,59 +8,275 @@
       background: #000;
       color: white;
       font-family: sans-serif;
-    }
-    .carrusel {
-      display: flex;
-      overflow-x: auto;
-      gap: 1rem;
       padding: 1rem;
     }
+    .controls {
+      margin-bottom: 1rem;
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+    }
+    .controls button {
+      background: #e50914;
+      color: white;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .controls button:disabled {
+      background: #666;
+      cursor: not-allowed;
+    }
+    .controls select, .controls input {
+      background: #333;
+      color: white;
+      border: 1px solid #666;
+      padding: 0.5rem;
+      border-radius: 5px;
+    }
+    .loading {
+      text-align: center;
+      padding: 2rem;
+      font-size: 1.2rem;
+    }
+    .info {
+      margin-bottom: 1rem;
+      color: #ccc;
+    }
+    .carrusel {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 1rem;
+      padding: 1rem 0;
+    }
     .item {
-      flex: 0 0 auto;
-      width: 200px;
       position: relative;
+      aspect-ratio: 2/3;
     }
     .item img {
       width: 100%;
+      height: 100%;
+      object-fit: cover;
       border-radius: 10px;
     }
-    .info {
+    .item-info {
       position: absolute;
       bottom: 0;
-      background: rgba(0,0,0,0.7);
+      background: rgba(0,0,0,0.8);
       width: 100%;
       padding: 0.5rem;
       opacity: 0;
       transition: opacity 0.3s;
+      border-radius: 0 0 10px 10px;
     }
-    .item:hover .info {
+    .item:hover .item-info {
       opacity: 1;
+    }
+    .pagination {
+      margin-top: 2rem;
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+      justify-content: center;
+    }
+    .error {
+      background: #ff4444;
+      color: white;
+      padding: 1rem;
+      border-radius: 5px;
+      margin: 1rem 0;
     }
   </style>
 </head>
 <body>
-  <h1>Rakuten Clon</h1>
+  <h1>Rakuten Clon - Con Paginación</h1>
+  
+  <div class="controls">
+    <label>
+      Modo: 
+      <select id="mode">
+        <option value="paginated">Paginado (Recomendado)</option>
+        <option value="all">Todos (Lento)</option>
+      </select>
+    </label>
+    <label id="pageSizeControl">
+      Por página: 
+      <input type="number" id="pageSize" value="50" min="10" max="100">
+    </label>
+    <button onclick="loadMovies()">Cargar</button>
+    <span id="loadingIndicator" class="loading" style="display: none;">Cargando...</span>
+  </div>
+
+  <div id="info" class="info"></div>
+  <div id="error" class="error" style="display: none;"></div>
   <div class="carrusel" id="carrusel"></div>
+  
+  <div id="pagination" class="pagination" style="display: none;">
+    <button id="prevBtn" onclick="prevPage()" disabled>← Anterior</button>
+    <span id="pageInfo"></span>
+    <button id="nextBtn" onclick="nextPage()">Siguiente →</button>
+  </div>
 
   <script>
-    fetch('/api/movies')
-      .then(res => res.json())
-      .then(data => {
-        const container = document.getElementById('carrusel');
-        data.movies.forEach(movie => {
-          const div = document.createElement('div');
-          div.className = 'item';
-          div.innerHTML = `
-            <img src="${movie.portada}" alt="${movie.titulo}">
-            <div class="info">
-              <strong>${movie.titulo}</strong><br>
-              ${movie.generos}
-            </div>
-          `;
-          container.appendChild(div);
-        });
-      })
-      .catch(err => console.error('Error cargando películas:', err));
+    let currentCursor = null;
+    let currentPage = 1;
+    let hasMore = false;
+    let isLoading = false;
+
+    function showError(message) {
+      const errorDiv = document.getElementById('error');
+      errorDiv.textContent = message;
+      errorDiv.style.display = 'block';
+      setTimeout(() => {
+        errorDiv.style.display = 'none';
+      }, 5000);
+    }
+
+    function updateInfo(text) {
+      document.getElementById('info').textContent = text;
+    }
+
+    function showLoading(show) {
+      const indicator = document.getElementById('loadingIndicator');
+      indicator.style.display = show ? 'inline' : 'none';
+      isLoading = show;
+    }
+
+    function updatePagination() {
+      const pagination = document.getElementById('pagination');
+      const pageInfo = document.getElementById('pageInfo');
+      const prevBtn = document.getElementById('prevBtn');
+      const nextBtn = document.getElementById('nextBtn');
+      
+      const mode = document.getElementById('mode').value;
+      
+      if (mode === 'paginated') {
+        pagination.style.display = 'flex';
+        pageInfo.textContent = `Página ${currentPage}`;
+        prevBtn.disabled = currentPage <= 1;
+        nextBtn.disabled = !hasMore;
+      } else {
+        pagination.style.display = 'none';
+      }
+    }
+
+    function togglePageSizeControl() {
+      const mode = document.getElementById('mode').value;
+      const control = document.getElementById('pageSizeControl');
+      control.style.display = mode === 'paginated' ? 'inline' : 'none';
+    }
+
+    function renderMovies(movies) {
+      const container = document.getElementById('carrusel');
+      
+      if (currentPage === 1) {
+        container.innerHTML = '';
+      }
+      
+      movies.forEach(movie => {
+        const div = document.createElement('div');
+        div.className = 'item';
+        div.innerHTML = `
+          <img src="${movie.portada || '/placeholder.jpg'}" 
+               alt="${movie.titulo}"
+               onerror="this.src='/placeholder.jpg'">
+          <div class="item-info">
+            <strong>${movie.titulo}</strong><br>
+            <small>${movie.generos}</small>
+          </div>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    async function loadMovies(resetPage = true) {
+      if (isLoading) return;
+      
+      if (resetPage) {
+        currentPage = 1;
+        currentCursor = null;
+      }
+      
+      showLoading(true);
+      
+      const mode = document.getElementById('mode').value;
+      const pageSize = document.getElementById('pageSize').value;
+      
+      try {
+        let url = '/api/movies';
+        const params = new URLSearchParams();
+        
+        if (mode === 'all') {
+          params.append('all', 'true');
+          updateInfo('Cargando todas las películas... Esto puede tardar un momento.');
+        } else {
+          params.append('page', currentPage);
+          params.append('pageSize', pageSize);
+          if (currentCursor) {
+            params.append('cursor', currentCursor);
+          }
+          updateInfo(`Cargando página ${currentPage}...`);
+        }
+        
+        if (params.toString()) {
+          url += '?' + params.toString();
+        }
+        
+        const response = await fetch(url);
+        const data = await response.json();
+        
+        if (!response.ok) {
+          throw new Error(data.error || 'Error al cargar las películas');
+        }
+        
+        renderMovies(data.movies);
+        
+        if (mode === 'paginated') {
+          hasMore = data.has_more;
+          currentCursor = data.next_cursor;
+          updateInfo(`Página ${currentPage} - ${data.movies.length} películas cargadas`);
+        } else {
+          hasMore = false;
+          updateInfo(`Total: ${data.total || data.movies.length} películas cargadas`);
+        }
+        
+        updatePagination();
+        
+      } catch (error) {
+        console.error('Error:', error);
+        showError(`Error al cargar las películas: ${error.message}`);
+      } finally {
+        showLoading(false);
+      }
+    }
+
+    function nextPage() {
+      if (hasMore && !isLoading) {
+        currentPage++;
+        loadMovies(false);
+      }
+    }
+
+    function prevPage() {
+      if (currentPage > 1 && !isLoading) {
+        currentPage--;
+        // Para ir hacia atrás necesitaríamos implementar un sistema de cache
+        // Por ahora, recargamos desde el principio
+        loadMovies(true);
+      }
+    }
+
+    // Event listeners
+    document.getElementById('mode').addEventListener('change', function() {
+      togglePageSizeControl();
+      currentPage = 1;
+      currentCursor = null;
+    });
+
+    // Inicialización
+    togglePageSizeControl();
+    loadMovies();
   </script>
 </body>
 </html>
