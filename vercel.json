@@ -1,12 +1,6 @@
 {
-  "headers": [
-    {
-      "source": "/api/(.*)",
-      "headers": [
-        { "key": "Access-Control-Allow-Origin", "value": "https://todogram.softr.app" },
-        { "key": "Access-Control-Allow-Methods", "value": "GET,OPTIONS" },
-        { "key": "Access-Control-Allow-Headers", "value": "Content-Type" }
-      ]
-    }
+  "version": 2,
+  "builds": [
+    { "src": "api/movies.js", "use": "@vercel/node" }
   ]
 }
