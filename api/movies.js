@@ -1,46 +1,39 @@
-const fetch = require('node-fetch');
+import fetch from 'node-fetch';
 
-const NOTION_API_KEY = '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';
-const DATABASE_ID = '168ff30851b68184aa8af946a37a4cac';
+export default async function handler(req, res) {
+  const NOTION_KEY = "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";
+  const DATABASE_ID = "168ff30851b68184aa8af946a37a4cac";
 
-module.exports = async (req, res) => {
+  const url = `https://api.notion.com/v1/databases/${DATABASE_ID}/query`;
+
+  const options = {
+    method: "POST",
+    headers: {
+      "Authorization": `Bearer ${NOTION_KEY}`,
+      "Notion-Version": "2022-06-28",
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ page_size: 10 })
+  };
+
   try {
-    const response = await fetch(`https://api.notion.com/v1/databases/${DATABASE_ID}/query`, {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${NOTION_API_KEY}`,
-        'Content-Type': 'application/json',
-        'Notion-Version': '2022-06-28'
-      }
-    });
-
-    if (!response.ok) {
-      return res.status(500).json({ error: 'Error al consultar la API de Notion' });
-    }
-
+    const response = await fetch(url, options);
     const data = await response.json();
-    const movies = data.results.map(page => {
-      const properties = page.properties;
+
+    const items = data.results.map(page => {
+      const props = page.properties;
       return {
-        id: page.id,
-        title: properties['Título']?.title?.[0]?.plain_text || '',
-        year: properties['Año']?.rich_text?.[0]?.plain_text || '',
-        genres: properties['Géneros']?.multi_select?.map(g => g.name) || [],
-        poster: properties['Portada']?.files?.[0]?.file?.url || '',
-        synopsis: properties['Sinopsis']?.rich_text?.[0]?.plain_text || '',
-        tmdb_id: properties['ID TMDB']?.rich_text?.[0]?.plain_text || '',
-        duration: properties['Duración']?.rich_text?.[0]?.plain_text || '',
-        rating: properties['Puntuación']?.rich_text?.[0]?.plain_text || '',
-        trailer: properties['Trailer']?.url || '',
-        watch_url: properties['Ver Película']?.url || ''
+        titulo: props["Título"]?.title[0]?.plain_text || "Sin título",
+        genero: props["Géneros"]?.rich_text[0]?.plain_text || "",
+        sinopsis: props["Sinopsis"]?.rich_text[0]?.plain_text || "",
+        poster: props["Portada"]?.files[0]?.external?.url || "",
+        fondo: props["Carteles"]?.files[0]?.external?.url || ""
       };
     });
 
-    res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS');
-    res.status(200).json({ movies });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Error interno del servidor' });
+    res.status(200).json(items);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Error al conectar con Notion." });
   }
-};
+}
