@@ -61,6 +61,11 @@ export default async function handler(req, res) {
       const movies = allResults.map(page => {
         // Log de depuración para inspeccionar propiedades
         console.log('Propiedades de la página:', JSON.stringify(page.properties, null, 2));
+        
+        // Log específico para los campos problemáticos
+        console.log('Valores crudos de campos problemáticos:');
+        console.log('Subtitulos txt:', page.properties['Subtitulos txt']?.formula?.string || 'No definido');
+        console.log('Puntuación 1-10:', page.properties['Puntuación 1-10:']?.number || 'No definido');
 
         const get = (name) => {
           const prop = page.properties[name];
@@ -99,10 +104,10 @@ export default async function handler(req, res) {
           generos: get('Géneros txt'),
           categoria: get('Categorías txt'),
           audios: get('Audios txt'),
-          subtitulos: get('Subtítulos txt'),
+          subtitulos: get('Subtitulos txt'), // Corregido: sin tilde
           ano: get('Año'),
           duracion: get('Duración'),
-          puntuacion: get('Puntuación'),
+          puntuacion: get('Puntuación 1-10:'), // Corregido: nombre exacto
           trailer: get('Trailer'),
           ver_pelicula: get('Ver Película'),
           titulo_original: get('Título original'),
@@ -150,6 +155,11 @@ export default async function handler(req, res) {
       const movies = data.results.map(page => {
         // Log de depuración para inspeccionar propiedades
         console.log('Propiedades de la página:', JSON.stringify(page.properties, null, 2));
+        
+        // Log específico para los campos problemáticos
+        console.log('Valores crudos de campos problemáticos:');
+        console.log('Subtitulos txt:', page.properties['Subtitulos txt']?.formula?.string || 'No definido');
+        console.log('Puntuación 1-10:', page.properties['Puntuación 1-10:']?.number || 'No definido');
 
         const get = (name) => {
           const prop = page.properties[name];
@@ -188,10 +198,10 @@ export default async function handler(req, res) {
           generos: get('Géneros txt'),
           categoria: get('Categorías txt'),
           audios: get('Audios txt'),
-          subtitulos: get('Subtítulos txt'),
+          subtitulos: get('Subtitulos txt'), // Corregido: sin tilde
           ano: get('Año'),
           duracion: get('Duración'),
-          puntuacion: get(' Grownpuntoacion'),
+          puntuacion: get('Puntuación 1-10:'), // Corregido: nombre exacto
           trailer: get('Trailer'),
           ver_pelicula: get('Ver Película'),
           titulo_original: get('Título original'),
