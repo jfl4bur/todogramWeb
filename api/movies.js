@@ -68,6 +68,7 @@ export default async function handler(req, res) {
           if (prop.multi_select) return prop.multi_select?.map(s => s.name).join(', ') || '';
           if (prop.number) return prop.number || '';
           if (prop.url) return prop.url || '';
+          if (prop.formula) return prop.formula?.string || ''; // Manejo de fórmulas
           return '';
         };
 
@@ -78,17 +79,17 @@ export default async function handler(req, res) {
         };
 
         return {
-          id: get('ID'),
+          id: page.id || '', // ID único de la página
           titulo: get('Título'),
           id_tmdb: get('ID TMDB'),
           tmdb: get('TMDB'),
           sinopsis: get('Synopsis'),
           portada: getImg('Portada'),
           carteles: getImg('Carteles'),
-          generos: get('Géneros'),
-          categoria: get('Categoría'),
-          audios: get('Audios'),
-          subtitulos: get('Subtítulos'),
+          generos: get('Géneros txt'),
+          categoria: get('Categorías txt'),
+          audios: get('Audios txt'),
+          subtitulos: get('Subtítulos txt'),
           ano: get('Año'),
           duracion: get('Duración'),
           puntuacion: get('Puntuación'),
@@ -100,7 +101,9 @@ export default async function handler(req, res) {
           paises: get('País(es)'),
           directores: get('Director(es)'),
           escritores: get('Escritor(es)'),
-          reparto_principal: get('Reparto principal')
+          reparto_principal: get('Reparto principal'),
+          video_iframe: get('Video iframe'),
+          video_iframe_1: get('Video iframe 1')
         };
       });
 
@@ -144,6 +147,7 @@ export default async function handler(req, res) {
           if (prop.multi_select) return prop.multi_select?.map(s => s.name).join(', ') || '';
           if (prop.number) return prop.number || '';
           if (prop.url) return prop.url || '';
+          if (prop.formula) return prop.formula?.string || ''; // Manejo de fórmulas
           return '';
         };
 
@@ -154,17 +158,17 @@ export default async function handler(req, res) {
         };
 
         return {
-          id: get('ID'),
+          id: page.id || '', // ID único de la página
           titulo: get('Título'),
           id_tmdb: get('ID TMDB'),
           tmdb: get('TMDB'),
           sinopsis: get('Synopsis'),
           portada: getImg('Portada'),
           carteles: getImg('Carteles'),
-          generos: get('Géneros'),
-          categoria: get('Categoría'),
-          audios: get('Audios'),
-          subtitulos: get('Subtítulos'),
+          generos: get('Géneros txt'),
+          categoria: get('Categorías txt'),
+          audios: get('Audios txt'),
+          subtitulos: get('Subtítulos txt'),
           ano: get('Año'),
           duracion: get('Duración'),
           puntuacion: get('Puntuación'),
@@ -176,7 +180,9 @@ export default async function handler(req, res) {
           paises: get('País(es)'),
           directores: get('Director(es)'),
           escritores: get('Escritor(es)'),
-          reparto_principal: get('Reparto principal')
+          reparto_principal: get('Reparto principal'),
+          video_iframe: get('Video iframe'),
+          video_iframe_1: get('Video iframe 1')
         };
       });
 
