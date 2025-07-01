@@ -13,7 +13,7 @@ export default async function handler(req, res) {
 
   try {
     if (getAll) {
-      // Función para obtener TODAS las páginas (usar con precaución para datasets grandes)
+      // Función para obtener TODAS las páginas
       async function getAllPages() {
         let allResults = [];
         let hasMore = true;
@@ -47,8 +47,7 @@ export default async function handler(req, res) {
           hasMore = data.has_more;
           nextCursor = data.next_cursor;
           
-          // Timeout de seguridad
-          if (batchCount > 100) { // Máximo 10,000 entradas
+          if (batchCount > 100) {
             console.warn('Límite de batches alcanzado, cortando la consulta');
             break;
           }
@@ -60,26 +59,54 @@ export default async function handler(req, res) {
       const allResults = await getAllPages();
       
       const movies = allResults.map(page => {
-        const get = (name) => page.properties[name]?.title?.[0]?.text?.content ||
-                              page.properties[name]?.rich_text?.[0]?.text?.content ||
-                              page.properties[name]?.select?.name || '';
+        const get = (name) => {
+          const prop = page.properties[name];
+          if (!prop) return '';
+          if (prop.title) return prop.title[0]?.text?.content || '';
+          if (prop.rich_text) return prop.rich_text[0]?.text?.content || '';
+          if (prop.select) return prop.select?.name || '';
+          if (prop.multi_select) return prop.multi_select?.map(s => s.name).join(', ') || '';
+          if (prop.number) return prop.number || '';
+          if (prop.url) return prop.url || '';
+          return '';
+        };
 
-        const getImg = (name) => page.properties[name]?.files?.[0]?.external?.url ||
-                                 page.properties[name]?.files?.[0]?.file?.url || '';
+        const getImg = (name) => {
+          const prop = page.properties[name];
+          if (!prop || !prop.files || prop.files.length === 0) return '';
+          return prop.files[0]?.external?.url || prop.files[0]?.file?.url || '';
+        };
 
         return {
+          id: get('ID'),
           titulo: get('Título'),
-          sinopsis: get('Sinopsis'),
+          id_tmdb: get('ID TMDB'),
+          tmdb: get('TMDB'),
+          sinopsis: get('Synopsis'),
           portada: getImg('Portada'),
           carteles: getImg('Carteles'),
-          generos: get('Géneros')
+          generos: get('Géneros'),
+          categoria: get('Categoría'),
+          audios: get('Audios'),
+          subtitulos: get('Subtítulos'),
+          ano: get('Año'),
+          duracion: get('Duración'),
+          puntuacion: get('Puntuación'),
+          trailer: get('Trailer'),
+          ver_pelicula: get('Ver Película'),
+          titulo_original: get('Título original'),
+          productoras: get('Productora(s)'),
+          idiomas_originales: get('Idioma(s) original(es)'),
+          paises: get('País(es)'),
+          directores: get('Director(es)'),
+          escritores: get('Escritor(es)'),
+          reparto_principal: get('Reparto principal')
         };
       });
 
       console.log(`Total de películas obtenidas: ${movies.length}`);
       
-      // Headers con cache
-      res.setHeader('Cache-Control', 'public, max-age=300'); // 5 minutos
+      res.setHeader('Cache-Control', 'public, max-age=300');
       res.status(200).json({ 
         movies,
         total: movies.length,
@@ -87,7 +114,7 @@ export default async function handler(req, res) {
       });
       
     } else {
-      // Paginación estándar (recomendado)
+      // Paginación estándar
       const response = await fetch(`https://api.notion.com/v1/databases/${DATABASE_ID}/query`, {
         method: 'POST',
         headers: {
@@ -108,26 +135,54 @@ export default async function handler(req, res) {
       }
 
       const movies = data.results.map(page => {
-        const get = (name) => page.properties[name]?.title?.[0]?.text?.content ||
-                              page.properties[name]?.rich_text?.[0]?.text?.content ||
-                              page.properties[name]?.select?.name || '';
+        const get = (name) => {
+          const prop = page.properties[name];
+          if (!prop) return '';
+          if (prop.title) return prop.title[0]?.text?.content || '';
+          if (prop.rich_text) return prop.rich_text[0]?.text?.content || '';
+          if (prop.select) return prop.select?.name || '';
+          if (prop.multi_select) return prop.multi_select?.map(s => s.name).join(', ') || '';
+          if (prop.number) return prop.number || '';
+          if (prop.url) return prop.url || '';
+          return '';
+        };
 
-        const getImg = (name) => page.properties[name]?.files?.[0]?.external?.url ||
-                                 page.properties[name]?.files?.[0]?.file?.url || '';
+        const getImg = (name) => {
+          const prop = page.properties[name];
+          if (!prop || !prop.files || prop.files.length === 0) return '';
+          return prop.files[0]?.external?.url || prop.files[0]?.file?.url || '';
+        };
 
         return {
+          id: get('ID'),
           titulo: get('Título'),
-          sinopsis: get('Sinopsis'),
+          id_tmdb: get('ID TMDB'),
+          tmdb: get('TMDB'),
+          sinopsis: get('Synopsis'),
           portada: getImg('Portada'),
           carteles: getImg('Carteles'),
-          generos: get('Géneros')
+          generos: get('Géneros'),
+          categoria: get('Categoría'),
+          audios: get('Audios'),
+          subtitulos: get('Subtítulos'),
+          ano: get('Año'),
+          duracion: get('Duración'),
+          puntuacion: get('Puntuación'),
+          trailer: get('Trailer'),
+          ver_pelicula: get('Ver Película'),
+          titulo_original: get('Título original'),
+          productoras: get('Productora(s)'),
+          idiomas_originales: get('Idioma(s) original(es)'),
+          paises: get('País(es)'),
+          directores: get('Director(es)'),
+          escritores: get('Escritor(es)'),
+          reparto_principal: get('Reparto principal')
         };
       });
 
       console.log(`Página ${page}: ${movies.length} películas obtenidas`);
       
-      // Headers con cache ligero
-      res.setHeader('Cache-Control', 'public, max-age=60'); // 1 minuto
+      res.setHeader('Cache-Control', 'public, max-age=60');
       res.status(200).json({ 
         movies,
         has_more: data.has_more,
