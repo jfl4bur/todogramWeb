@@ -65,7 +65,7 @@ export default async function handler(req, res) {
         // Log específico para los campos problemáticos
         console.log('Valores crudos de campos problemáticos:');
         console.log('Subtitulos txt:', page.properties['Subtitulos txt']?.formula?.string || 'No definido');
-        console.log('Puntuación 1-10:', page.properties['Puntuación 1-10:']?.number || 'No definido');
+        console.log('Puntuación:', page.properties['Puntuación']?.formula?.string || 'No definido');
 
         const get = (name) => {
           const prop = page.properties[name];
@@ -104,10 +104,10 @@ export default async function handler(req, res) {
           generos: get('Géneros txt'),
           categoria: get('Categorías txt'),
           audios: get('Audios txt'),
-          subtitulos: get('Subtitulos txt'), // Corregido: sin tilde
+          subtitulos: get('Subtitulos txt'), // Sin tilde
           ano: get('Año'),
           duracion: get('Duración'),
-          puntuacion: get('Puntuación 1-10:'), // Corregido: nombre exacto
+          puntuacion: get('Puntuación'), // Cambiado a fórmula
           trailer: get('Trailer'),
           ver_pelicula: get('Ver Película'),
           titulo_original: get('Título original'),
@@ -159,7 +159,7 @@ export default async function handler(req, res) {
         // Log específico para los campos problemáticos
         console.log('Valores crudos de campos problemáticos:');
         console.log('Subtitulos txt:', page.properties['Subtitulos txt']?.formula?.string || 'No definido');
-        console.log('Puntuación 1-10:', page.properties['Puntuación 1-10:']?.number || 'No definido');
+        console.log('Puntuación:', page.properties['Puntuación']?.formula?.string || 'No definido');
 
         const get = (name) => {
           const prop = page.properties[name];
@@ -198,10 +198,10 @@ export default async function handler(req, res) {
           generos: get('Géneros txt'),
           categoria: get('Categorías txt'),
           audios: get('Audios txt'),
-          subtitulos: get('Subtitulos txt'), // Corregido: sin tilde
+          subtitulos: get('Subtitulos txt'), // Sin tilde
           ano: get('Año'),
           duracion: get('Duración'),
-          puntuacion: get('Puntuación 1-10:'), // Corregido: nombre exacto
+          puntuacion: get('Puntuación'), // Cambiado a fórmula
           trailer: get('Trailer'),
           ver_pelicula: get('Ver Película'),
           titulo_original: get('Título original'),
