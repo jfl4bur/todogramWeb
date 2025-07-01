@@ -107,7 +107,6 @@ export default async function handler(req, res) {
           subtitulos: get('Subtitulos txt'), // Sin tilde
           ano: get('Año'),
           duracion: get('Duración'),
-          puntuacion: get('Puntuación'), // Cambiado a fórmula
           trailer: get('Trailer'),
           ver_pelicula: get('Ver Película'),
           titulo_original: get('Título original'),
@@ -118,7 +117,8 @@ export default async function handler(req, res) {
           escritores: get('Escritor(es)'),
           reparto_principal: get('Reparto principal'),
           video_iframe: get('Video iframe'),
-          video_iframe_1: get('Video iframe 1')
+          video_iframe_1: get('Video iframe 1'),
+          puntuacion: get('Puntuación') // Cambiado a fórmula
         };
       });
 
@@ -201,7 +201,6 @@ export default async function handler(req, res) {
           subtitulos: get('Subtitulos txt'), // Sin tilde
           ano: get('Año'),
           duracion: get('Duración'),
-          puntuacion: get('Puntuación'), // Cambiado a fórmula
           trailer: get('Trailer'),
           ver_pelicula: get('Ver Película'),
           titulo_original: get('Título original'),
@@ -212,7 +211,8 @@ export default async function handler(req, res) {
           escritores: get('Escritor(es)'),
           reparto_principal: get('Reparto principal'),
           video_iframe: get('Video iframe'),
-          video_iframe_1: get('Video iframe 1')
+          video_iframe_1: get('Video iframe 1'),
+          puntuacion: get('Puntuación') // Cambiado a fórmula
         };
       });
 
