@@ -59,27 +59,37 @@ export default async function handler(req, res) {
       const allResults = await getAllPages();
       
       const movies = allResults.map(page => {
+        // Log de depuración para inspeccionar propiedades
+        console.log('Propiedades de la página:', JSON.stringify(page.properties, null, 2));
+
         const get = (name) => {
           const prop = page.properties[name];
-          if (!prop) return '';
+          if (!prop) {
+            console.log(`Campo ${name} no encontrado en propiedades`);
+            return '';
+          }
           if (prop.title) return prop.title[0]?.text?.content || '';
           if (prop.rich_text) return prop.rich_text[0]?.text?.content || '';
           if (prop.select) return prop.select?.name || '';
           if (prop.multi_select) return prop.multi_select?.map(s => s.name).join(', ') || '';
           if (prop.number) return prop.number || '';
           if (prop.url) return prop.url || '';
-          if (prop.formula) return prop.formula?.string || ''; // Manejo de fórmulas
+          if (prop.formula) return prop.formula?.string || '';
+          console.log(`Tipo de propiedad no manejado para ${name}:`, prop.type);
           return '';
         };
 
         const getImg = (name) => {
           const prop = page.properties[name];
-          if (!prop || !prop.files || prop.files.length === 0) return '';
+          if (!prop || !prop.files || prop.files.length === 0) {
+            console.log(`Campo de imagen ${name} no encontrado o vacío`);
+            return '';
+          }
           return prop.files[0]?.external?.url || prop.files[0]?.file?.url || '';
         };
 
         return {
-          id: page.id || '', // ID único de la página
+          id: page.id || '',
           titulo: get('Título'),
           id_tmdb: get('ID TMDB'),
           tmdb: get('TMDB'),
@@ -138,27 +148,37 @@ export default async function handler(req, res) {
       }
 
       const movies = data.results.map(page => {
+        // Log de depuración para inspeccionar propiedades
+        console.log('Propiedades de la página:', JSON.stringify(page.properties, null, 2));
+
         const get = (name) => {
           const prop = page.properties[name];
-          if (!prop) return '';
+          if (!prop) {
+            console.log(`Campo ${name} no encontrado en propiedades`);
+            return '';
+          }
           if (prop.title) return prop.title[0]?.text?.content || '';
           if (prop.rich_text) return prop.rich_text[0]?.text?.content || '';
           if (prop.select) return prop.select?.name || '';
           if (prop.multi_select) return prop.multi_select?.map(s => s.name).join(', ') || '';
           if (prop.number) return prop.number || '';
           if (prop.url) return prop.url || '';
-          if (prop.formula) return prop.formula?.string || ''; // Manejo de fórmulas
+          if (prop.formula) return prop.formula?.string || '';
+          console.log(`Tipo de propiedad no manejado para ${name}:`, prop.type);
           return '';
         };
 
         const getImg = (name) => {
           const prop = page.properties[name];
-          if (!prop || !prop.files || prop.files.length === 0) return '';
+          if (!prop || !prop.files || prop.files.length === 0) {
+            console.log(`Campo de imagen ${name} no encontrado o vacío`);
+            return '';
+          }
           return prop.files[0]?.external?.url || prop.files[0]?.file?.url || '';
         };
 
         return {
-          id: page.id || '', // ID único de la página
+          id: page.id || '',
           titulo: get('Título'),
           id_tmdb: get('ID TMDB'),
           tmdb: get('TMDB'),
@@ -171,7 +191,7 @@ export default async function handler(req, res) {
           subtitulos: get('Subtítulos txt'),
           ano: get('Año'),
           duracion: get('Duración'),
-          puntuacion: get('Puntuación'),
+          puntuacion: get(' Grownpuntoacion'),
           trailer: get('Trailer'),
           ver_pelicula: get('Ver Película'),
           titulo_original: get('Título original'),
