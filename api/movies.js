@@ -65,7 +65,7 @@ export default async function handler(req, res) {
         // Log específico para los campos problemáticos
         console.log('Valores crudos de campos problemáticos:');
         console.log('Subtitulos txt:', page.properties['Subtitulos txt']?.formula?.string || 'No definido');
-        console.log('Puntuación:', page.properties['Puntuación']?.formula?.string || 'No definido');
+        console.log('Puntuación:', page.properties['Puntuación']?.formula?.number || page.properties['Puntuación']?.formula?.string || 'No definido');
 
         const get = (name) => {
           const prop = page.properties[name];
@@ -73,13 +73,38 @@ export default async function handler(req, res) {
             console.log(`Campo ${name} no encontrado en propiedades`);
             return '';
           }
+          
           if (prop.title) return prop.title[0]?.text?.content || '';
           if (prop.rich_text) return prop.rich_text[0]?.text?.content || '';
           if (prop.select) return prop.select?.name || '';
           if (prop.multi_select) return prop.multi_select?.map(s => s.name).join(', ') || '';
           if (prop.number) return prop.number || '';
           if (prop.url) return prop.url || '';
-          if (prop.formula) return prop.formula?.string || '';
+          
+          // Manejo mejorado de fórmulas
+          if (prop.formula) {
+            // Si la fórmula devuelve un string
+            if (prop.formula.string !== null && prop.formula.string !== undefined) {
+              return prop.formula.string;
+            }
+            // Si la fórmula devuelve un número
+            if (prop.formula.number !== null && prop.formula.number !== undefined) {
+              // Convertir el punto decimal a coma si es necesario
+              return prop.formula.number.toString().replace('.', ',');
+            }
+            // Si la fórmula devuelve un booleano
+            if (prop.formula.boolean !== null && prop.formula.boolean !== undefined) {
+              return prop.formula.boolean.toString();
+            }
+            // Si la fórmula devuelve una fecha
+            if (prop.formula.date) {
+              return prop.formula.date.start || '';
+            }
+            
+            console.log(`Fórmula sin valor definido para ${name}:`, prop.formula);
+            return '';
+          }
+          
           console.log(`Tipo de propiedad no manejado para ${name}:`, prop.type);
           return '';
         };
@@ -118,7 +143,7 @@ export default async function handler(req, res) {
           reparto_principal: get('Reparto principal'),
           video_iframe: get('Video iframe'),
           video_iframe_1: get('Video iframe 1'),
-          puntuacion: get('Puntuación') // Cambiado a fórmula
+          puntuacion: get('Puntuación') // Ahora manejará correctamente las fórmulas numéricas
         };
       });
 
@@ -159,7 +184,7 @@ export default async function handler(req, res) {
         // Log específico para los campos problemáticos
         console.log('Valores crudos de campos problemáticos:');
         console.log('Subtitulos txt:', page.properties['Subtitulos txt']?.formula?.string || 'No definido');
-        console.log('Puntuación:', page.properties['Puntuación']?.formula?.string || 'No definido');
+        console.log('Puntuación:', page.properties['Puntuación']?.formula?.number || page.properties['Puntuación']?.formula?.string || 'No definido');
 
         const get = (name) => {
           const prop = page.properties[name];
@@ -167,13 +192,38 @@ export default async function handler(req, res) {
             console.log(`Campo ${name} no encontrado en propiedades`);
             return '';
           }
+          
           if (prop.title) return prop.title[0]?.text?.content || '';
           if (prop.rich_text) return prop.rich_text[0]?.text?.content || '';
           if (prop.select) return prop.select?.name || '';
           if (prop.multi_select) return prop.multi_select?.map(s => s.name).join(', ') || '';
           if (prop.number) return prop.number || '';
           if (prop.url) return prop.url || '';
-          if (prop.formula) return prop.formula?.string || '';
+          
+          // Manejo mejorado de fórmulas
+          if (prop.formula) {
+            // Si la fórmula devuelve un string
+            if (prop.formula.string !== null && prop.formula.string !== undefined) {
+              return prop.formula.string;
+            }
+            // Si la fórmula devuelve un número
+            if (prop.formula.number !== null && prop.formula.number !== undefined) {
+              // Convertir el punto decimal a coma si es necesario
+              return prop.formula.number.toString().replace('.', ',');
+            }
+            // Si la fórmula devuelve un booleano
+            if (prop.formula.boolean !== null && prop.formula.boolean !== undefined) {
+              return prop.formula.boolean.toString();
+            }
+            // Si la fórmula devuelve una fecha
+            if (prop.formula.date) {
+              return prop.formula.date.start || '';
+            }
+            
+            console.log(`Fórmula sin valor definido para ${name}:`, prop.formula);
+            return '';
+          }
+          
           console.log(`Tipo de propiedad no manejado para ${name}:`, prop.type);
           return '';
         };
@@ -212,7 +262,7 @@ export default async function handler(req, res) {
           reparto_principal: get('Reparto principal'),
           video_iframe: get('Video iframe'),
           video_iframe_1: get('Video iframe 1'),
-          puntuacion: get('Puntuación') // Cambiado a fórmula
+          puntuacion: get('Puntuación') // Ahora manejará correctamente las fórmulas numéricas
         };
       });
 
