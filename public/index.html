@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Todogram Tv</title>
+  <title>Rakuten Clon - Completo</title>
   <style>
     body {
       background: #000;
@@ -371,7 +371,8 @@
         div.className = 'item';
         
         const links = [];
-        if (movie.trailer) links.push(`<a href="${movie.trailer}" target="_blank" class="link-btn">🎬 Trailer</a>`);
+        if (movie.video_iframe) links.push(`<a href="${movie.video_iframe}" target="_blank" class="link-btn">🎬 Ver Película</a>`);
+        if (movie.trailer) links.push(`<a href="${movie.trailer}" target="_blank" class="link-btn">🎞️ Trailer</a>`);
         if (movie.ver_pelicula) links.push(`<a href="${movie.ver_pelicula}" target="_blank" class="link-btn">▶️ Ver</a>`);
         if (movie.tmdb) links.push(`<a href="${movie.tmdb}" target="_blank" class="link-btn secondary">📊 TMDB</a>`);
         
@@ -435,6 +436,7 @@
       
       movies.forEach(movie => {
         const links = [];
+        if (movie.video_iframe) links.push(`<a href="${movie.video_iframe}" target="_blank" class="link-btn">Ver Película</a>`);
         if (movie.trailer) links.push(`<a href="${movie.trailer}" target="_blank" class="link-btn">Trailer</a>`);
         if (movie.ver_pelicula) links.push(`<a href="${movie.ver_pelicula}" target="_blank" class="link-btn">Ver</a>`);
         if (movie.tmdb) links.push(`<a href="${movie.tmdb}" target="_blank" class="link-btn secondary">TMDB</a>`);
