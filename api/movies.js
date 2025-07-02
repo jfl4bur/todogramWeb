@@ -1,16 +1,5 @@
 import fetch from 'node-fetch';
 
-export default async function handler(req, res) {
-  // Configurar encabezados CORS
-  res.setHeader('Access-Control-Allow-Origin', 'https://todogram.softr.app');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-
-  // Manejar solicitudes OPTIONS (preflight)
-  if (req.method === 'OPTIONS') {
-    return res.status(200).end();
-  }
-
   const NOTION_API_KEY = process.env.NOTION_API_KEY || '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';
   const DATABASE_ID = process.env.NOTION_DATABASE_ID || '168ff30851b68184aa8af946a37a4cac';
 
