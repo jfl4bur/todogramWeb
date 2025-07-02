@@ -2,19 +2,21 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Rakuten Clon</title>
+  <title>Todogram Tv</title>
   <style>
     body {
       background: #000;
       color: white;
       font-family: sans-serif;
       padding: 1rem;
+      line-height: 1.4;
     }
     .controls {
       margin-bottom: 1rem;
       display: flex;
       gap: 1rem;
       align-items: center;
+      flex-wrap: wrap;
     }
     .controls button {
       background: #e50914;
@@ -23,6 +25,10 @@
       padding: 0.5rem 1rem;
       border-radius: 5px;
       cursor: pointer;
+      transition: background 0.3s;
+    }
+    .controls button:hover:not(:disabled) {
+      background: #ff1c2e;
     }
     .controls button:disabled {
       background: #666;
@@ -35,50 +41,24 @@
       padding: 0.5rem;
       border-radius: 5px;
     }
+    .view-toggle {
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
+    }
     .loading {
       text-align: center;
       padding: 2rem;
       font-size: 1.2rem;
+      color: #ffa500;
     }
     .info {
       margin-bottom: 1rem;
       color: #ccc;
-    }
-    .carrusel {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-      gap: 1rem;
-      padding: 1rem 0;
-    }
-    .item {
-      position: relative;
-      aspect-ratio: 2/3;
-    }
-    .item img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      border-radius: 10px;
-    }
-    .item-info {
-      position: absolute;
-      bottom: 0;
-      background: rgba(0,0,0,0.8);
-      width: 100%;
-      padding: 0.5rem;
-      opacity: 0;
-      transition: opacity 0.3s;
-      border-radius: 0 0 10px 10px;
-    }
-    .item:hover .item-info {
-      opacity: 1;
-    }
-    .pagination {
-      margin-top: 2rem;
-      display: flex;
-      gap: 1rem;
-      align-items: center;
-      justify-content: center;
+      background: #1a1a1a;
+      padding: 0.5rem 1rem;
+      border-radius: 5px;
+      border-left: 4px solid #e50914;
     }
     .error {
       background: #ff4444;
@@ -87,10 +67,191 @@
       border-radius: 5px;
       margin: 1rem 0;
     }
+    
+    /* Vista de carrusel */
+    .carrusel {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 2rem;
+      padding: 1rem 0;
+    }
+    .item {
+      background: #1a1a1a;
+      border-radius: 10px;
+      overflow: hidden;
+      transition: transform 0.3s, box-shadow 0.3s;
+      border: 1px solid #333;
+    }
+    .item:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 25px rgba(229, 9, 20, 0.3);
+    }
+    .item-poster {
+      position: relative;
+      aspect-ratio: 2/3;
+      overflow: hidden;
+    }
+    .item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .item-overlay {
+      position: absolute;
+      top: 0;
+      right: 0;
+      background: rgba(0,0,0,0.8);
+      color: #ffa500;
+      padding: 0.25rem 0.5rem;
+      font-size: 0.8rem;
+      font-weight: bold;
+    }
+    .item-content {
+      padding: 1rem;
+    }
+    .item-title {
+      font-size: 1.2rem;
+      font-weight: bold;
+      margin-bottom: 0.5rem;
+      color: #fff;
+    }
+    .item-original-title {
+      font-size: 0.9rem;
+      color: #ccc;
+      margin-bottom: 0.5rem;
+      font-style: italic;
+    }
+    .item-info-grid {
+      display: grid;
+      gap: 0.5rem;
+      font-size: 0.85rem;
+    }
+    .info-row {
+      display: flex;
+      gap: 0.5rem;
+    }
+    .info-label {
+      color: #e50914;
+      font-weight: bold;
+      min-width: 80px;
+      flex-shrink: 0;
+    }
+    .info-value {
+      color: #ccc;
+      flex: 1;
+    }
+    .item-synopsis {
+      margin-top: 1rem;
+      padding-top: 1rem;
+      border-top: 1px solid #333;
+      font-size: 0.9rem;
+      color: #ddd;
+      line-height: 1.4;
+      max-height: 100px;
+      overflow-y: auto;
+    }
+    .item-links {
+      margin-top: 1rem;
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+    .link-btn {
+      background: #e50914;
+      color: white;
+      text-decoration: none;
+      padding: 0.25rem 0.5rem;
+      border-radius: 3px;
+      font-size: 0.8rem;
+      transition: background 0.3s;
+    }
+    .link-btn:hover {
+      background: #ff1c2e;
+    }
+    .link-btn.secondary {
+      background: #333;
+    }
+    .link-btn.secondary:hover {
+      background: #555;
+    }
+    
+    /* Vista de tabla */
+    .table-view {
+      background: #1a1a1a;
+      border-radius: 10px;
+      overflow: hidden;
+      margin: 1rem 0;
+    }
+    .table-container {
+      overflow-x: auto;
+      max-height: 80vh;
+      overflow-y: auto;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+    }
+    th, td {
+      padding: 0.5rem;
+      text-align: left;
+      border-bottom: 1px solid #333;
+      vertical-align: top;
+    }
+    th {
+      background: #2a2a2a;
+      color: #e50914;
+      font-weight: bold;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    td {
+      color: #ccc;
+      max-width: 200px;
+      word-wrap: break-word;
+    }
+    .table-poster {
+      width: 50px;
+      height: 75px;
+      object-fit: cover;
+      border-radius: 3px;
+    }
+    .table-synopsis {
+      max-width: 150px;
+      max-height: 60px;
+      overflow-y: auto;
+      font-size: 0.8rem;
+    }
+    
+    .pagination {
+      margin-top: 2rem;
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    
+    /* Scrollbar personalizado */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #1a1a1a;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #666;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #888;
+    }
   </style>
 </head>
 <body>
-  <h1>Rakuten Clon - Con Paginación</h1>
+  <h1>🎬 Rakuten Clon - Base de Datos Completa</h1>
   
   <div class="controls">
     <label>
@@ -104,13 +265,20 @@
       Por página: 
       <input type="number" id="pageSize" value="50" min="10" max="100">
     </label>
+    <div class="view-toggle">
+      <label>Vista:</label>
+      <label><input type="radio" name="view" value="cards" checked> Tarjetas</label>
+      <label><input type="radio" name="view" value="table"> Tabla</label>
+    </div>
     <button onclick="loadMovies()">Cargar</button>
     <span id="loadingIndicator" class="loading" style="display: none;">Cargando...</span>
   </div>
 
   <div id="info" class="info"></div>
   <div id="error" class="error" style="display: none;"></div>
-  <div class="carrusel" id="carrusel"></div>
+  
+  <div id="carrusel" class="carrusel"></div>
+  <div id="tableView" class="table-view" style="display: none;"></div>
   
   <div id="pagination" class="pagination" style="display: none;">
     <button id="prevBtn" onclick="prevPage()" disabled>← Anterior</button>
@@ -123,6 +291,7 @@
     let currentPage = 1;
     let hasMore = false;
     let isLoading = false;
+    let allMoviesData = [];
 
     function showError(message) {
       const errorDiv = document.getElementById('error');
@@ -134,7 +303,7 @@
     }
 
     function updateInfo(text) {
-      document.getElementById('info').textContent = text;
+      document.getElementById('info').innerHTML = text;
     }
 
     function showLoading(show) {
@@ -167,7 +336,30 @@
       control.style.display = mode === 'paginated' ? 'inline' : 'none';
     }
 
-    function renderMovies(movies) {
+    function toggleView() {
+      const view = document.querySelector('input[name="view"]:checked').value;
+      const carrusel = document.getElementById('carrusel');
+      const tableView = document.getElementById('tableView');
+      
+      if (view === 'cards') {
+        carrusel.style.display = 'grid';
+        tableView.style.display = 'none';
+      } else {
+        carrusel.style.display = 'none';
+        tableView.style.display = 'block';
+        renderTable(allMoviesData);
+      }
+    }
+
+    function formatValue(value) {
+      if (!value || value === '') return '-';
+      if (typeof value === 'string' && value.length > 100) {
+        return value.substring(0, 100) + '...';
+      }
+      return value;
+    }
+
+    function renderCards(movies) {
       const container = document.getElementById('carrusel');
       
       if (currentPage === 1) {
@@ -177,17 +369,101 @@
       movies.forEach(movie => {
         const div = document.createElement('div');
         div.className = 'item';
+        
+        const links = [];
+        if (movie.trailer) links.push(`<a href="${movie.trailer}" target="_blank" class="link-btn">🎬 Trailer</a>`);
+        if (movie.ver_pelicula) links.push(`<a href="${movie.ver_pelicula}" target="_blank" class="link-btn">▶️ Ver</a>`);
+        if (movie.tmdb) links.push(`<a href="${movie.tmdb}" target="_blank" class="link-btn secondary">📊 TMDB</a>`);
+        
         div.innerHTML = `
-          <img src="${movie.portada || '/placeholder.jpg'}" 
-               alt="${movie.titulo}"
-               onerror="this.src='/placeholder.jpg'">
-          <div class="item-info">
-            <strong>${movie.titulo}</strong><br>
-            <small>${movie.generos}</small>
+          <div class="item-poster">
+            <img src="${movie.portada || '/placeholder.jpg'}" 
+                 alt="${movie.titulo}"
+                 onerror="this.src='/placeholder.jpg'">
+            ${movie.puntuacion ? `<div class="item-overlay">⭐ ${movie.puntuacion}</div>` : ''}
+          </div>
+          <div class="item-content">
+            <div class="item-title">${movie.titulo || 'Sin título'}</div>
+            ${movie.titulo_original && movie.titulo_original !== movie.titulo ? 
+              `<div class="item-original-title">${movie.titulo_original}</div>` : ''}
+            
+            <div class="item-info-grid">
+              ${movie.ano ? `<div class="info-row"><span class="info-label">Año:</span><span class="info-value">${movie.ano}</span></div>` : ''}
+              ${movie.duracion ? `<div class="info-row"><span class="info-label">Duración:</span><span class="info-value">${movie.duracion}</span></div>` : ''}
+              ${movie.generos ? `<div class="info-row"><span class="info-label">Géneros:</span><span class="info-value">${movie.generos}</span></div>` : ''}
+              ${movie.categoria ? `<div class="info-row"><span class="info-label">Categoría:</span><span class="info-value">${movie.categoria}</span></div>` : ''}
+              ${movie.directores ? `<div class="info-row"><span class="info-label">Director:</span><span class="info-value">${movie.directores}</span></div>` : ''}
+              ${movie.reparto_principal ? `<div class="info-row"><span class="info-label">Reparto:</span><span class="info-value">${formatValue(movie.reparto_principal)}</span></div>` : ''}
+              ${movie.paises ? `<div class="info-row"><span class="info-label">País:</span><span class="info-value">${movie.paises}</span></div>` : ''}
+              ${movie.idiomas_originales ? `<div class="info-row"><span class="info-label">Idioma:</span><span class="info-value">${movie.idiomas_originales}</span></div>` : ''}
+              ${movie.audios ? `<div class="info-row"><span class="info-label">Audios:</span><span class="info-value">${movie.audios}</span></div>` : ''}
+              ${movie.subtitulos ? `<div class="info-row"><span class="info-label">Subtítulos:</span><span class="info-value">${movie.subtitulos}</span></div>` : ''}
+              ${movie.productoras ? `<div class="info-row"><span class="info-label">Productora:</span><span class="info-value">${formatValue(movie.productoras)}</span></div>` : ''}
+            </div>
+            
+            ${movie.sinopsis ? `<div class="item-synopsis">${movie.sinopsis}</div>` : ''}
+            
+            ${links.length > 0 ? `<div class="item-links">${links.join('')}</div>` : ''}
           </div>
         `;
         container.appendChild(div);
       });
+    }
+
+    function renderTable(movies) {
+      const container = document.getElementById('tableView');
+      
+      if (movies.length === 0) {
+        container.innerHTML = '<p style="padding: 2rem; text-align: center;">No hay datos para mostrar</p>';
+        return;
+      }
+      
+      const headers = [
+        'Portada', 'Título', 'Título Original', 'Año', 'Duración', 'Géneros', 'Categoría',
+        'Director(es)', 'Reparto', 'País(es)', 'Idioma Original', 'Productora(s)',
+        'Audios', 'Subtítulos', 'Puntuación', 'Sinopsis', 'Enlaces'
+      ];
+      
+      let tableHTML = `
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>${headers.map(h => `<th>${h}</th>`).join('')}</tr>
+            </thead>
+            <tbody>
+      `;
+      
+      movies.forEach(movie => {
+        const links = [];
+        if (movie.trailer) links.push(`<a href="${movie.trailer}" target="_blank" class="link-btn">Trailer</a>`);
+        if (movie.ver_pelicula) links.push(`<a href="${movie.ver_pelicula}" target="_blank" class="link-btn">Ver</a>`);
+        if (movie.tmdb) links.push(`<a href="${movie.tmdb}" target="_blank" class="link-btn secondary">TMDB</a>`);
+        
+        tableHTML += `
+          <tr>
+            <td><img src="${movie.portada || '/placeholder.jpg'}" class="table-poster" onerror="this.src='/placeholder.jpg'"></td>
+            <td><strong>${movie.titulo || '-'}</strong></td>
+            <td>${movie.titulo_original || '-'}</td>
+            <td>${movie.ano || '-'}</td>
+            <td>${movie.duracion || '-'}</td>
+            <td>${movie.generos || '-'}</td>
+            <td>${movie.categoria || '-'}</td>
+            <td>${movie.directores || '-'}</td>
+            <td>${formatValue(movie.reparto_principal)}</td>
+            <td>${movie.paises || '-'}</td>
+            <td>${movie.idiomas_originales || '-'}</td>
+            <td>${formatValue(movie.productoras)}</td>
+            <td>${movie.audios || '-'}</td>
+            <td>${movie.subtitulos || '-'}</td>
+            <td>${movie.puntuacion ? `⭐ ${movie.puntuacion}` : '-'}</td>
+            <td><div class="table-synopsis">${movie.sinopsis || '-'}</div></td>
+            <td>${links.join(' ')}</td>
+          </tr>
+        `;
+      });
+      
+      tableHTML += '</tbody></table></div>';
+      container.innerHTML = tableHTML;
     }
 
     async function loadMovies(resetPage = true) {
@@ -209,14 +485,14 @@
         
         if (mode === 'all') {
           params.append('all', 'true');
-          updateInfo('Cargando todas las películas... Esto puede tardar un momento.');
+          updateInfo('🔄 Cargando todas las películas... Esto puede tardar un momento.');
         } else {
           params.append('page', currentPage);
           params.append('pageSize', pageSize);
           if (currentCursor) {
             params.append('cursor', currentCursor);
           }
-          updateInfo(`Cargando página ${currentPage}...`);
+          updateInfo(`📄 Cargando página ${currentPage}...`);
         }
         
         if (params.toString()) {
@@ -230,22 +506,33 @@
           throw new Error(data.error || 'Error al cargar las películas');
         }
         
-        renderMovies(data.movies);
+        if (currentPage === 1) {
+          allMoviesData = data.movies;
+        } else {
+          allMoviesData = allMoviesData.concat(data.movies);
+        }
+        
+        const view = document.querySelector('input[name="view"]:checked').value;
+        if (view === 'cards') {
+          renderCards(data.movies);
+        } else {
+          renderTable(allMoviesData);
+        }
         
         if (mode === 'paginated') {
           hasMore = data.has_more;
           currentCursor = data.next_cursor;
-          updateInfo(`Página ${currentPage} - ${data.movies.length} películas cargadas`);
+          updateInfo(`📊 Página ${currentPage} - ${data.movies.length} películas cargadas (Total acumulado: ${allMoviesData.length})`);
         } else {
           hasMore = false;
-          updateInfo(`Total: ${data.total || data.movies.length} películas cargadas`);
+          updateInfo(`✅ Total: ${data.total || data.movies.length} películas cargadas`);
         }
         
         updatePagination();
         
       } catch (error) {
         console.error('Error:', error);
-        showError(`Error al cargar las películas: ${error.message}`);
+        showError(`❌ Error al cargar las películas: ${error.message}`);
       } finally {
         showLoading(false);
       }
@@ -263,6 +550,7 @@
         currentPage--;
         // Para ir hacia atrás necesitaríamos implementar un sistema de cache
         // Por ahora, recargamos desde el principio
+        allMoviesData = [];
         loadMovies(true);
       }
     }
@@ -272,6 +560,11 @@
       togglePageSizeControl();
       currentPage = 1;
       currentCursor = null;
+      allMoviesData = [];
+    });
+
+    document.querySelectorAll('input[name="view"]').forEach(radio => {
+      radio.addEventListener('change', toggleView);
     });
 
     // Inicialización
